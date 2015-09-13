@@ -1,0 +1,62 @@
+.red { background-color: #AB3E5B; }
+h2.red { background-color: #AB3E5B; color: #cccccc;}
+.coral { background-color: #EF746F; }
+.orange { background-color: #FFBE40; }
+.lightgreen { background-color: #ECF081; }
+.green { background-color: #B3CC57; }
+.purple { background-color: #81698C; }
+.lighttext { color: #cccccc;}
+h1.lighttext { color: #cccccc;}
+h2.lighttext { color: #cccccc;}
+h3.lighttext { color: #cccccc;}
+h4.lighttext { color: #cccccc;}
+h5.lighttext { color: #cccccc;}
+h3.stepsbox { color: #B3CC57; background-color: #777777; }
+h2.detailbox { color: #FFBE40; background-color: #777777; }
+h2.casebox { color: #B090B0; background-color: #777777; }
+div.quote { font-style: italic; font-weight: bold; }
+p.title { text-align: left; font-weight: bold; font-size: 100%; }
+p.exerciseTitleGreen { text-align: left;  font-weight: bold; font-size: 100%; color: #B3CC57; }
+p.exerciseTitleOrange{ text-align: left;  font-weight: bold; font-size: 100%; color: #FFBE40; }
+p.exerciseTitleRed { text-align: left;  font-weight: bold; font-size: 100%; color: #CC4E6B; }
+div.exerciseBlock { background-color: #777777; width: 100%; text-align: left; padding: 1px 15px 1px; font-size: 80%;}
+.exerciseTable { background-color: #cccccc; width: 100%; text-align: left; padding: 1px 15px 1px; font-size: 80%;}
+p.exerciseSpecial { font-style: italic; font-weight: bold; margin-left: 50px; }
+ul.exerciseSpecial { font-style: italic; font-weight: bold; margin-left: 50px; }
+hr { background:#555555; border:0; height:3px; width: 30%; margin-top: 40px; margin-bottom: 40px; }
+.slides .footer { position: absolute; text-align: center; bottom: -1em; font-size: 0.5em; width: 100%; z-index: 500; }
+
+/* Display bars */
+div.barcontainer { margin-top: 10%; width: 80%; margin-left: 10%;}
+div.bar1 { text-align: left; padding: 10px; padding-left: 5%; background: #79BD9A; width: 70%; margin-left: 15%; font-weight: bold; margin-bottom: 5px; height: 50px;}
+div.bar2 { text-align: left; padding: 10px; padding-left: 5%; background: #0B486B; width: 70%; margin-left: 15%; color: #cccccc; font-weight: bold; margin-bottom: 5px;}
+div.bar3 { text-align: left; padding: 10px; padding-left: 5%; background: #A8DBA8; width: 70%; margin-left: 15%; font-weight: bold; margin-bottom: 5px;}
+
+/* .col_Adrift in Dreams */
+.aid_table { background-color: #79BD9A;}
+.aid_header { position: absolute; top: 50px; left: 100px; z-index:500; font-size:100px; background-color: #A8DBA8; }
+.a .aid_tables { color: #000000; }
+div.aid_listItem { font-weight: bold; background-color: #CFF09E; line-height: 1; margin: 20px; display: inline; }
+.col_aid_one { background-color: #CFF09E; border-color: #CFF09E;}
+.col_aid_two { background-color: #A8DBA8;}
+.col_aid_three { background-color: #79BD9A;}
+.col_aid_four { background-color: #3B8686;}
+.col_aid_five { background-color: #0B486B;}
+/* .col_Hymn for my soul */
+.col_hfms_one { background-color: #2A044A;}
+.col_hfms_two { background-color: #0B2E59;}
+.col_hfms_three { background-color: #0D6759;}
+.col_hfms_four { background-color: #7AB317;}
+.col_hfms_five { background-color: #A0C55F;}
+/* .col_Melon ball surprise */
+.col_mbs_one { background-color: #D1F2A5;}
+.col_mbs_two { background-color: #EFFAB4;}
+.col_mbs_three { background-color: #FFC48C;}
+.col_mbs_four { background-color: #FF9F80;}
+.col_mbs_five { background-color: #F56991;}
+/* .col_I like your smile */
+.col_ilys_one { background-color: #B3CC57;}
+.col_ilys_two { background-color: #ECF081;}
+.col_ilys_three { background-color: #FFBE40;}
+.col_ilys_four { background-color: #EF746F;}
+.col_ilys_five { background-color: #AB3E5B;}

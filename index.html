@@ -409,6 +409,9 @@
                     <section>
                         <aside class=notes>
                             Two modes of operation
+                            <br>ad-hoc means run arbitrary commands over whole estate!
+                            <br>destroy your entire infrastructure
+                            <br>Remember, Jedi, you can also use that power for Good
                         </aside>
                         <h3 class="col_aid_four lighttext">Ad-Hoc mode</h3>
                         <hr>
@@ -418,7 +421,6 @@
 
 ansible webserver -s -m apt -a "pkg=openssl state=latest"
 
-:w
 ansible prod-lb -a "cat /etc/haproxy/haproxy.conf"
                         </code></pre>
                     </section>
@@ -551,21 +553,372 @@ ansible all -m [module] -a [whole string]
                     </section>
                 </section>
                 <section>
+                    <aside class=notes>
+                        <br>is it making sense
+                        <br>how is it feeding into the goals
+                    </aside>
                     <h3 class="col_aid_four lighttext">ChatStop</h3>
                         <img style="max-width: 90%; border-color: #0B486B;" src="images/walk-in-the-park.jpg">
+                </section>
+                <section>
+                    <!-- Introduction: Splash page -->
+                    <section>
+                        <h2 class="col_aid_five lighttext">A little bit of theory: 2</h2>
+                        <div class=barcontainer >
+                            <img style="max-width: 70%; border-color: #0B486B;" src="images/ansible-logo-word.png">
+                        </div>
+                        <p>Playbooks</p>
+                        <p>Facts and Variables</p>
+                        <p>Templates</p>
+                    </section>
+                </section>
+ 
+                <section data-background="#303030" data-background-transition='fade'>
+                    <section class='lighttext' id="goal-2">
+                        <h3 class='red lighttext'>goal : Playbooks</h3>
+                        <hr>
+                        <p class="exerciseTitleGreen">Part 1 :</p>
+                        <div class="exerciseBlock">
+                            <b>Summary:</b> Convert the individual steps from Goal 1 into a single Playbook
+                            <p>Your Playbook should be divided into sensible Plays
+                        </div>
+                    </section>
+                    <section class='lighttext'>
+                        <p class="exerciseTitleGreen">Part 2 :</p>
+                        <div class="exerciseBlock">
+                            <b>Summary:</b> The Satellite Playbook and its attendent configuration are behaving inefficiently
+                        </div>
+                        <p>
+                        <div class="exerciseBlock">
+                            <p>Reduce the the time it takes to complete the Plays
+                            <p>The lowest time wins
+                            <p>You may edit any of the files, but do not modify the module calls themselves
+                        </div>
+                        <p>
+                        <div class="exerciseBlock">
+                            <p>The Playbook and config are in /opt/lesson/satellite
+                        </div>
+                    </section>
+                    <section class='lighttext'>
+                        <p class="exerciseTitleGreen">Hints and Tips</p>
+                        <div class="exerciseBlock">
+                            <ul>
+                                <li>There are various ways to optimize:</li>
+                                <li>Some defaults have been changed</li>
+                                <li>Consider how to optimize each individual step</li>
+                            </ul>
+                        </div>
+                    </section>
+                </section>
+
+
+                <!-- Topic Section: Introducing Ansible -->
+                <!-- Description: General introduction and quotes -->
+                <section data-background="#A8DBA8">
+
+                    <!-- According to Wikipedia -->
+                    <section>
+                        <aside class="notes">
+                            Show a demo playbook
+                            run through it
+                        </aside>
+                        <h3 class="col_aid_four lighttext">Playbooks</h3>
+                        <div class="quote">"are Ansibles configuration, deployment and orchestration language"</div>
+                        <p>
+                        <ul>
+                            <li>Describe policies to enforce</li>
+                            <li>represent steps of a process</li>
+                            <li>sequence multi-tier rollouts</li>
+                            <li>delegate actions to other hosts</li>
+                            <li>defined in YAML</li>
+                            <li>Arbitrary filename</li>
+                            <li>Contain Plays</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <pre><code data-trim contenteditable>
+---
+- hosts: webservers
+  vars:
+    http_port: 80
+    max_clients: 200
+  remote_user: root
+  tasks:
+  - name: ensure apache is at the latest version
+    yum: pkg=httpd state=latest
+  - name: write the apache config file
+    template: src=/srv/httpd.j2 dest=/etc/httpd.conf
+  - name: ensure apache is running (and enable it at boot)
+    service: name=httpd state=started enabled=yes
+
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3 class="col_aid_four lighttext">Plays</h3>
+                        <ul>
+                            <li>Plays are run in order</li>
+                            <li>Plays consist of blocks</li>
+                            (hosts, vars, tasks, handlers)
+                            <li>Blocks define actions
+                            <li>Configuration items can be specified</li>
+                            (remote_user, sudo, gather_facts)
+                        </ul>
+                    </section>
+                    <section>
+                        <pre><code data-trim contenteditable>
+- hosts: webservers
+  remote_user: root
+
+  tasks:
+  - name: ensure apache is at the latest version
+    yum: pkg=httpd state=latest
+  - name: write the apache config file
+    template: src=/srv/httpd.j2 dest=/etc/httpd.conf
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h3 class="col_aid_four lighttext">Playbook mode</h3>
+                        <hr>
+                        <p>Run Playbooks with the "ansible-playbook" command
+                        <p>
+                        <pre><code data-trim contenteditable>
+ansible-playbook playbook.yml
+
+ansible-playbook --list-tasks runme.yaml
+
+ansible-playbook -C staging.yml
+                        </code></pre>
+                    </section>
+                </section>
+                <section data-background="#A8DBA8">
+                    <section>
+                        <h3 class="col_aid_four lighttext">Facts</h3>
+                        <hr>
+                        <p>Information about a node in a playbook is gathered for use by that playbook</p>
+                        <ul>
+                            <li>Includes multiple sources: Ansible, Facter, ohai)</li>
+                            (if they are installed)
+                            <li>Facts may be gathered from any node you reference</li>
+                            <li>(deactivated with "gather_facts: false" for performance)</li>
+                            <li>Provided by the "setup" module</li>
+                            <li>Custom facts can be deployed in /etc/ansible/facts.d</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <pre><code data-trim contenteditable>
+ansible all -m setup (list all facts)
+
+ansible all -m setup -a 'filter=ohai_*' (filter for type ohai)
+                        </code></pre>
+                        <p>and from ansible-doc setup:
+                        <pre><code data-trim contenteditable>
+# Display facts from all hosts and store them indexed by I(hostname) at C(/tmp/facts).
+ansible all -m setup --tree /tmp/facts
+# Display only facts regarding memory found by ansible on all hosts and output them.
+ansible all -m setup -a 'filter=ansible_*_mb'
+# Display only facts returned by facter.
+ansible all -m setup -a 'filter=facter_*'
+# Display only facts about certain interfaces.
+ansible all -m setup -a 'filter=ansible_eth[0-2]'
+                        </code></pre>
+                    </section>
+                    <section>
+                        <b>Some Playbook code</b>
+                        <p>
+                        <pre><code data-trim contenteditable>
+                        - hosts: monitoring
+  tasks: []
+                        </code></pre>
+                    </section>
+                </section>
+                <section data-background="#A8DBA8">
+                    <section>
+                        <h3 class="col_aid_four lighttext">Variables</h3>
+                        <hr>
+                        <p>Variables are set in multiple places, and can be used in templates or directly in Playbooks as part of loops or logic statements
+                        <p>Variables can be set... 
+                    </section>
+                    <section>
+                        <b>...in Inventory</b>
+                        <p>
+                        <pre><code data-trim contenteditable>
+[atlanta]
+host1
+host2
+
+[atlanta:vars]
+ntp_server=ntp.atlanta.example.com
+proxy=proxy.atlanta.example.com
+                        </code></pre>
+                        <p>
+                        <pre><code data-trim contenteditable>
+[atlanta]
+host1 http_port=80 maxRequestsPerChild=808
+host2 http_port=303 maxRequestsPerChild=909
+                        </code></pre>
+                    </section>
+                    <section>
+                        <b>...in Playbooks</b>
+                        <p>
+                        <pre><code data-trim contenteditable>
+- hosts: webservers
+  vars:
+    http_port: 80
+                        </code></pre>
+                    </section>
+                    <section>
+                        <b>...in ansible/group_vars and host_vars</b>
+                        <pre><code data-trim contenteditable>
+/etc/ansible/group_vars/raleigh
+/etc/ansible/group_vars/webservers
+/etc/ansible/host_vars/foosball
+                        </code></pre>
+                    </section>
+                    <section>
+                        <div class="quote">But what good is that???</div>
+                    </section>
+                </section>
+                <section data-background="#A8DBA8">
+                    <section>
+                        <h3 class="col_aid_four lighttext">Templates</h3>
+                        <p>Tailor your configuration files before sending them to your nodes
+                        <ul>
+                            <li>Jinja2
+                            <li>http://jinja.pocoo.org/docs/</li>
+                            <li>"template" module is similar to the "file" module usage</li>
+                            <li>{ {my_variable }}</li>
+                        </ul>
+                    </section>
+                    <section>
+                        <div class="quote">Create your template</div>
+                        <p>
+                        A simple template
+                        <pre><code data-trim contenteditable>
+/etc/ssh/sshd_config - sshd_config.j2
+...
+# What ports, IPs and protocols we listen for
+Port {{ ssh_port }}
+...
+                        </code></pre>
+                        <p>
+                        or inside a Playbook
+                        <pre><code data-trim contenteditable>
+                        template: src=foo.cfg.j2 dest={{ remote_install_path }}/foo.cfg
+                        </code></pre>
+
+                    </section>
+                    <section>
+                        <div class="quote">Reference your template</div>
+                        <p>
+                        <pre><code data-trim contenteditable>
+# Example from Ansible Playbooks
+- template: src=/mytemplates/foo.j2 dest=/etc/file.conf owner=bin group=wheel mode=0644
+                        </code></pre>
+                    </section>
                 </section>
 
 
 
+
+
+
+                <section>
+                    <aside class=notes>
+                        <br>is it making sense
+                        <br>how is it feeding into the goals
+                    </aside>
+                    <h3 class="col_aid_four lighttext">ChatStop</h3>
+                        <img style="max-width: 90%; border-color: #0B486B;" src="images/walk-in-the-park.jpg">
+                </section>
+                <section>
+                    <!-- Introduction: Splash page -->
+                    <section>
+                        <h2 class="col_aid_five lighttext">A little bit of theory: 3</h2>
+                        <div class=barcontainer >
+                            <img style="max-width: 70%; border-color: #0B486B;" src="images/ansible-logo-word.png">
+                        </div>
+                        <p>Handlers</p>
+                        <p>Roles</p>
+                        <p>Ansible Galaxy</p>
+                        <p></p>
+                    </section>
+                </section>
+ 
+                <section data-background="#303030" data-background-transition='fade'>
+                    <section class='lighttext' id="goal-3">
+                        <h3 class='red lighttext'>goal : Orchestration</h3>
+                        <hr>
+                        <div class="exerciseBlock">
+                            <b>Summary:</b> A common IT service task is to update content on live machines without cuasing an outage
+                            <p>Update these two machines that form a simple cluster for Red and Blue
+                        </div>
+                        <img style="max-width: 70%; border-color: #0B486B;" src="images/diag-project3.jpg">
+                    </section>
+                    <section class='lighttext'>
+                        <p class="exerciseTitleGreen">Seamless upgrade :</p>
+                        <div class="exerciseBlock">
+                            <ul>
+                                <li>Take each node out of service one at a time:</li>
+                                haproxy on red/blue-webnode-1
+                                <li>Update the nginx configuration for the web nodes:</li>
+                                red/blue-cluster-1 and red/blue-cluster-2
+                                <li>Restart nginx</li>
+                                <li>Put the node back in service</li>
+                                <li>The new configuration file is in <b>/opt/lesson/orchestrate</b></li>
+                            </ul>
+                        </div>
+                        <p>
+                        <div class="exerciseBlock">
+                            Any lost traffic loses you the point!
+                        </div>
+                    </section>
+                    <section class='lighttext'>
+                        <p class="exerciseTitleGreen">Hints and Tips</p>
+                        <div class="exerciseBlock">
+                            You will need:
+                            <ul>
+                                <li>A simple template for haproxy</li>
+                                <li>Pre and Post execution step in your Playbook</li>
+                                <li>http://docs.ansible.com/ansible/guide_rolling_upgrade.html</li>
+                            </ul>
+                        </div>
+                    </section>
+                </section>
+
+                <section data-background="#A8DBA8">
+                    <section>
+                        <aside class=notes>
+                            common to "include" the handler from a seperate directory of common handlers
+                        </aside>
+                        <h3 class="col_aid_four lighttext">Handlers</h3>
+                        A specific type of task executed after a different task has completed
+                        <p>Handlers allow clean-up and actions such as service restarts
+                        <pre><code data-trim contenteditable>
+  tasks:
+  - name: write the apache config file
+    template: src=/srv/httpd.j2 dest=/etc/httpd.conf
+    notify:
+    - restart apache
+  handlers:
+    - name: restart apache
+      service: name=httpd state=restarted
+                        </code></pre>
+                    </section>
+                </section>
+                <section data-background="#A8DBA8">
+                    <section>
+                        <aside class=notes>
+                        </aside>
+                        <h3 class="col_aid_four lighttext">Roles</h3>
+
+
+ 
+ 
+
                 <section>
 
 
-
-                Part 2:
-                A little bit of theory part 2
-
-                Playbooks
-                Variables
+                        <p>Handlers</p>
 
 
                 Pipelining
